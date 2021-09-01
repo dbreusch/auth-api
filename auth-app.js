@@ -1,12 +1,17 @@
+// auth-api: main app
 const express = require('express');
-
 const authRoutes = require('./routes/auth-routes');
 
-const app = express();
+// define port from environment or default to 3000
 const port = process.env.PORT || 3000
 
+// initialize express
+const app = express();
+
+// convert POST/PUT requests to JSON
 app.use(express.json());
 
+// handle CORS
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST,GET,OPTIONS');
@@ -14,8 +19,10 @@ app.use((req, res, next) => {
   next();
 });
 
+// define routes
 app.use(authRoutes);
 
+// generic error handler
 app.use((err, req, res, next) => {
   console.log(err);
   let code = 500;
@@ -30,4 +37,5 @@ app.use((err, req, res, next) => {
   res.status(code).json({ message: message });
 });
 
+// start listening!
 app.listen(port);

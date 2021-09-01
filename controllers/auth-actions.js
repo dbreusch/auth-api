@@ -1,7 +1,9 @@
+// auth-api: action functions
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { createAndThrowError } = require('../helpers/error');
 
+// return a bcrypt-hashed version of a plain-text password
 const createPasswordHash = async (password) => {
   try {
     // console.log(password);
@@ -12,6 +14,7 @@ const createPasswordHash = async (password) => {
   }
 };
 
+// verify a password against its hashed-and-stored version
 const verifyPasswordHash = async (password, hashedPassword) => {
   let passwordIsValid;
   try {
@@ -25,12 +28,14 @@ const verifyPasswordHash = async (password, hashedPassword) => {
   }
 };
 
+// create a new jsonwebtoken
 const createToken = (userId) => {
   return jwt.sign({ uid: userId }, process.env.TOKEN_KEY, {
     expiresIn: '6h',
   });
 };
 
+// verify a JWT token against key
 const verifyToken = (token) => {
   try {
     const decodedToken = jwt.verify(token, process.env.TOKEN_KEY);
@@ -40,6 +45,7 @@ const verifyToken = (token) => {
   }
 };
 
+// return hashed version of plain-text password
 const getHashedPassword = async (req, res, next) => {
   const rawPassword = req.params.password;
   try {
@@ -50,6 +56,7 @@ const getHashedPassword = async (req, res, next) => {
   }
 };
 
+// return a new JWT token after verifying user password
 const getToken = async (req, res, next) => {
   const userId = req.body.userId;
   const password = req.body.password;
@@ -65,6 +72,7 @@ const getToken = async (req, res, next) => {
   res.status(200).json({ token });
 };
 
+// return a decoded JWT token
 const getTokenConfirmation = (req, res) => {
   const token = req.body.token;
 

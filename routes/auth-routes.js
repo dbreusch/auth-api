@@ -1,9 +1,11 @@
+// auth-api: define app routes
 const express = require('express');
-
 const authActions = require('../controllers/auth-actions');
 
+// initialize router
 const router = express.Router();
 
+// add routes
 router.get('/hashed-pw/:password', authActions.getHashedPassword);
 
 router.post('/token', authActions.getToken);
