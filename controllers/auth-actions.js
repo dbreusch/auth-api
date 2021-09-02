@@ -1,6 +1,7 @@
 // auth-api: action functions
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+
 const { createAndThrowError } = require('../helpers/error');
 
 // return a bcrypt-hashed version of a plain-text password

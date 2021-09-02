@@ -1,9 +1,10 @@
 // auth-api: main app
 const express = require('express');
+
 const authRoutes = require('./routes/auth-routes');
 
-// define port from environment or default to 3000
-const port = process.env.PORT || 3000
+// define port from environment or default to 8080
+const port = process.env.PORT || 8080
 
 // initialize express
 const app = express();
@@ -26,7 +27,7 @@ app.use(authRoutes);
 app.use((err, req, res, next) => {
   console.log(err);
   let code = 500;
-  let message = 'Something went wrong.';
+  let message = 'auth-app: Something went wrong.';
   if (err.code) {
     code = err.code;
   }
@@ -38,4 +39,5 @@ app.use((err, req, res, next) => {
 });
 
 // start listening!
+console.log(`Listening on port ${port}`)
 app.listen(port);
