@@ -1,7 +1,7 @@
 // auth-api: define app routes
 const express = require('express');
 
-const authActions = require('../controllers/auth-actions');
+const authActions = require('../controllers/auth-controllers');
 
 // initialize router
 const router = express.Router();
