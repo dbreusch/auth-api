@@ -62,6 +62,7 @@ const getToken = async (req, res, next) => {
   const userId = req.body.userId;
   const password = req.body.password;
   const hashedPassword = req.body.hashedPassword;
+  // console.log(`auth-controller:getToken ${userId}`)
   try {
     await verifyPasswordHash(password, hashedPassword);
   } catch (err) {
@@ -69,6 +70,7 @@ const getToken = async (req, res, next) => {
   }
 
   const token = createToken(userId);
+  // console.log(`auth-controller:getToken ${token}`)
 
   res.status(200).json({ token });
 };
