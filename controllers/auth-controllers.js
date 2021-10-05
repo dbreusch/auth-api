@@ -1,6 +1,9 @@
 // auth-api: action functions
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 const { createAndThrowError } = require('../helpers/error');
 

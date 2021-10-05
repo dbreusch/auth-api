@@ -1,10 +1,12 @@
 // auth-api: main app
 const express = require('express');
+const dotenv = require('dotenv');
 
 const authRoutes = require('./routes/auth-routes');
 
 // define port from environment or default to 8080
-const port = process.env.PORT || 8080
+dotenv.config();
+const port = process.env.PORT || 8080;
 
 // initialize express
 const app = express();
@@ -39,5 +41,5 @@ app.use((err, req, res, next) => {
 });
 
 // start listening!
-console.log(`Listening on port ${port}`)
+console.log(`Listening on port ${port}`);
 app.listen(port);
