@@ -6,7 +6,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const { createAndThrowError } = require('../helpers/error');
-const getEnvVar = require('./helpers/getEnvVar');
+const { getEnvVar } = require('./helpers/getEnvVar');
 
 // return a bcrypt-hashed version of a plain-text password
 const createPasswordHash = async (password) => {
