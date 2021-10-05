@@ -32,9 +32,20 @@ const verifyPasswordHash = async (password, hashedPassword) => {
   }
 };
 
+// try to get TOKEN_KEY from environment
+const getTokenKey = () => {
+  let tokenKey;
+  try {
+    tokenKey = process.env.TOKEN_KEY;
+    return tokenKey;
+  } catch (err) {
+    createAndThrowError('Environment variable TOKEN_KEY not found.', 500);
+  }
+}
+
 // create a new jsonwebtoken
 const createToken = (userId) => {
-  return jwt.sign({ uid: userId }, process.env.TOKEN_KEY, {
+  return jwt.sign({ uid: userId }, getTokenKey(), {
     expiresIn: '6h',
   });
 };
@@ -42,7 +53,7 @@ const createToken = (userId) => {
 // verify a JWT token against key
 const verifyToken = (token) => {
   try {
-    const decodedToken = jwt.verify(token, process.env.TOKEN_KEY);
+    const decodedToken = jwt.verify(token, getTokenKey());
     return decodedToken;
   } catch (err) {
     createAndThrowError('Could not verify token.', 401);
