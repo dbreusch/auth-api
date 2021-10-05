@@ -6,6 +6,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const { createAndThrowError } = require('../helpers/error');
+const getEnvVar = require('./helpers/getEnvVar');
 
 // return a bcrypt-hashed version of a plain-text password
 const createPasswordHash = async (password) => {
@@ -32,20 +33,9 @@ const verifyPasswordHash = async (password, hashedPassword) => {
   }
 };
 
-// try to get TOKEN_KEY from environment
-const getTokenKey = () => {
-  let tokenKey;
-  try {
-    tokenKey = process.env.TOKEN_KEY;
-    return tokenKey;
-  } catch (err) {
-    createAndThrowError('Environment variable TOKEN_KEY not found.', 500);
-  }
-}
-
 // create a new jsonwebtoken
 const createToken = (userId) => {
-  return jwt.sign({ uid: userId }, getTokenKey(), {
+  return jwt.sign({ uid: userId }, getEnvVar('TOKEN_KEY'), {
     expiresIn: '6h',
   });
 };
@@ -53,7 +43,7 @@ const createToken = (userId) => {
 // verify a JWT token against key
 const verifyToken = (token) => {
   try {
-    const decodedToken = jwt.verify(token, getTokenKey());
+    const decodedToken = jwt.verify(token, getEnvVar('TOKEN_KEY'));
     return decodedToken;
   } catch (err) {
     createAndThrowError('Could not verify token.', 401);
