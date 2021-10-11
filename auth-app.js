@@ -11,16 +11,10 @@ const port = process.env.PORT || 8080;
 // initialize express
 const app = express();
 
-// convert POST/PUT requests to JSON
+// parse incoming POST requests with JSON payloads (default type application/json)
 app.use(express.json());
 
 // handle CORS
-// app.use((req, res, next) => {
-//   res.setHeader('Access-Control-Allow-Origin', '*');
-//   res.setHeader('Access-Control-Allow-Methods', 'POST,GET,OPTIONS');
-//   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-//   next();
-// });
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader(
@@ -30,22 +24,24 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
   next();
 });
+
 // define routes
 app.use(authRoutes);
 
-// generic error handler
+// this function only runs if nothing else responded first
+app.use((req, res, next) => {
+  const error = new HttpError('Could not find this route.', 404);
+  throw error;
+});
+
+// generic error handler (because there are FOUR args)
 app.use((err, req, res, next) => {
-  console.log(err);
-  let code = 500;
-  let message = 'auth-app: Something went wrong.';
-  if (err.code) {
-    code = err.code;
+  if (res.headerSent) { // just return/goto next if a response already exists
+    return next(err);
   }
 
-  if (err.message) {
-    message = err.message;
-  }
-  res.status(code).json({ message: message });
+  res.status(err.code || 500);
+  res.json({ message: err.message || 'auth-app/generic error handler: Something went wrong.' });
 });
 
 // start listening!
