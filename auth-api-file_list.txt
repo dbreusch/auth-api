@@ -1,0 +1,12 @@
+GPS Tracks : auth-api
+
+Core files:
+----------
+auth-app.js
+
+controllers/auth-controllers.js
+
+helpers/error.js
+helpers/getEnvVar.js
+
+routes/auth-routes.js

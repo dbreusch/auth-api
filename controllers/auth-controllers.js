@@ -79,7 +79,7 @@ const getToken = async (req, res, next) => {
   res.status(200).json({ token });
 };
 
-// return a decoded JWT token
+// return userid from decoded JWT token
 const getTokenConfirmation = (req, res) => {
   const token = req.body.token;
 

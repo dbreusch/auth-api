@@ -4,8 +4,9 @@ const dotenv = require('dotenv');
 
 const authRoutes = require('./routes/auth-routes');
 
-// define port from environment or default to 8080
 dotenv.config();
+
+// define port from environment or default to 8080
 const port = process.env.PORT || 8080;
 
 // initialize express

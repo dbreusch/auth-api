@@ -6,6 +6,8 @@ const authControllers = require('../controllers/auth-controllers');
 // initialize router
 const router = express.Router();
 
+// define available routes
+
 // /hashed-pw: return hashed version of plain-text password
 router.get('/hashed-pw/:password', authControllers.getHashedPassword);
 
