@@ -8,6 +8,8 @@ dotenv.config();
 const { createAndThrowError } = require('../helpers/error');
 const { getEnvVar } = require('../helpers/getEnvVar');
 
+// utility functions start here
+
 // return a bcrypt-hashed version of a plain-text password
 const createPasswordHash = async (password) => {
   try {
@@ -49,6 +51,8 @@ const verifyToken = (token) => {
     createAndThrowError('Could not verify token.', 401);
   }
 };
+
+// exported functions start here!
 
 // return hashed version of plain-text password
 const getHashedPassword = async (req, res, next) => {
