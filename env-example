@@ -1,0 +1,5 @@
+# Key used to create/verify tokens (string).
+TOKEN_KEY=
+
+# Listening port for this service (8080).
+PORT=
