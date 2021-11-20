@@ -13,11 +13,10 @@ const { getEnvVar } = require('../helpers/getEnvVar');
 // return a bcrypt-hashed version of a plain-text password
 const createPasswordHash = async (password) => {
   try {
-    // console.log(password);
     const hashedPassword = await bcrypt.hash(password, 12);
     return hashedPassword;
   } catch (err) {
-    createAndThrowError('Failed to create secure password.', 500);
+    createAndThrowError('auth-api: Failed to create secure password.', 500);
   }
 };
 
@@ -26,29 +25,38 @@ const verifyPasswordHash = async (password, hashedPassword) => {
   let passwordIsValid;
   try {
     passwordIsValid = await bcrypt.compare(password, hashedPassword);
-    // console.log(passwordIsValid, password, hashedPassword);
   } catch (err) {
-    createAndThrowError('Failed to verify password.', 500);
+    createAndThrowError('auth-api: Unable to verify password.', 500);
   }
   if (!passwordIsValid) {
-    createAndThrowError('Failed to verify password.', 401);
+    createAndThrowError('auth-api: Password does not verify.', 401);
   }
 };
 
-// create a new jsonwebtoken
+// create a new jsonwebtoken (good for 24 hours!)
 const createToken = (userId) => {
-  return jwt.sign({ uid: userId }, getEnvVar('TOKEN_KEY'), {
-    expiresIn: '6h',
-  });
+  try {
+    const newToken = jwt.sign(
+      { uid: userId },
+      getEnvVar('TOKEN_KEY'),
+      { expiresIn: '24h' }
+    );
+    return newToken;
+  } catch (err) {
+    createAndThrowError('auth-api: Could not create token.', 401);
+  }
 };
 
 // verify a JWT token against key
 const verifyToken = (token) => {
   try {
-    const decodedToken = jwt.verify(token, getEnvVar('TOKEN_KEY'));
+    const decodedToken = jwt.verify(
+      token,
+      getEnvVar('TOKEN_KEY')
+    );
     return decodedToken;
   } catch (err) {
-    createAndThrowError('Could not verify token.', 401);
+    createAndThrowError('auth-api: Could not verify token.', 401);
   }
 };
 
@@ -57,11 +65,12 @@ const verifyToken = (token) => {
 // return hashed version of plain-text password
 const getHashedPassword = async (req, res, next) => {
   const rawPassword = req.params.password;
+
   try {
     const hashedPassword = await createPasswordHash(rawPassword);
     res.status(200).json({ hashed: hashedPassword });
   } catch (err) {
-    next(err);
+    return next(err);
   }
 };
 
@@ -70,16 +79,15 @@ const getToken = async (req, res, next) => {
   const userId = req.body.userId;
   const password = req.body.password;
   const hashedPassword = req.body.hashedPassword;
-  // console.log(`auth-controller:getToken ${userId}`)
+
   try {
     await verifyPasswordHash(password, hashedPassword);
   } catch (err) {
+    // console.log('auth-api: password verify failed');
     return next(err);
   }
 
   const token = createToken(userId);
-  // console.log(`auth-controller:getToken ${token}`)
-
   res.status(200).json({ token });
 };
 
@@ -87,9 +95,12 @@ const getToken = async (req, res, next) => {
 const getTokenConfirmation = (req, res) => {
   const token = req.body.token;
 
-  const decodedToken = verifyToken(token);
-
-  res.status(200).json({ uid: decodedToken.uid });
+  try {
+    const decodedToken = verifyToken(token);
+    res.status(200).json({ uid: decodedToken.uid });
+  } catch (err) {
+    return next(err);
+  }
 };
 
 exports.getHashedPassword = getHashedPassword;
