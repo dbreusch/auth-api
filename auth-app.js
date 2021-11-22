@@ -1,6 +1,8 @@
 // auth-api: main app
 const express = require('express');
 const dotenv = require('dotenv');
+const fs = require('fs');
+const https = require('https');
 
 const authRoutes = require('./routes/auth-routes');
 
@@ -17,13 +19,18 @@ app.use(express.json());
 
 // handle CORS
 app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader(
+    'Access-Control-Allow-Origin',
+    '*'
+  );
   res.setHeader(
     'Access-Control-Allow-Headers',
     'Origin, X-Requested-With, Content-Type, Accept, Authorization'
   );
-  // res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
+  res.setHeader(
+    'Access-Control-Allow-Methods',
+    'GET, POST'
+  );
   next();
 });
 
@@ -47,5 +54,21 @@ app.use((err, req, res, next) => {
 });
 
 // start listening!
-console.log(`Listening on port ${port}`);
-app.listen(port);
+// console.log(`Listening on port ${port}`);
+// app.listen(port);
+
+// Create an HTTPS listener that points to the express app
+// Use a callback fn to tell when the server is created
+https
+  .createServer(
+    // Provide the private and public key to the server by reading each
+    // file's content using readFileSync
+    {
+      key: fs.readFileSync('ssl/key.pem'),
+      cert: fs.readFileSync('ssl/cert.pem')
+    },
+    app
+  )
+  .listen(port, () => {
+    console.log(`HTTPS server is running at port ${port}`);
+  });
