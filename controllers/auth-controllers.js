@@ -30,6 +30,8 @@ const verifyPasswordHash = async (password, hashedPassword) => {
   }
   if (!passwordIsValid) {
     createAndThrowError('auth-api: Password does not verify.', 401);
+  } else {
+    return true;
   }
 };
 
@@ -92,7 +94,7 @@ const getToken = async (req, res, next) => {
 };
 
 // return userid from decoded JWT token
-const getTokenConfirmation = (req, res) => {
+const getTokenConfirmation = (req, res, next) => {
   const token = req.body.token;
 
   try {
