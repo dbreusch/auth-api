@@ -36,10 +36,13 @@ const verifyPasswordHash = async (password, hashedPassword) => {
 };
 
 // create a new jsonwebtoken (good for 24 hours!)
-const createToken = (userId) => {
+const createToken = (userId, isAdmin) => {
   try {
     const newToken = jwt.sign(
-      { uid: userId },
+      {
+        uid: userId,
+        isAdmin: isAdmin
+      },
       getEnvVar('TOKEN_KEY'),
       { expiresIn: '24h' }
     );
@@ -79,6 +82,7 @@ const getHashedPassword = async (req, res, next) => {
 // return a new JWT token after verifying user password
 const getToken = async (req, res, next) => {
   const userId = req.body.userId;
+  const isAdmin = req.body.isAdmin;
   const password = req.body.password;
   const hashedPassword = req.body.hashedPassword;
 
@@ -89,7 +93,7 @@ const getToken = async (req, res, next) => {
     return next(err);
   }
 
-  const token = createToken(userId);
+  const token = createToken(userId, isAdmin);
   res.status(200).json({ token });
 };
 
