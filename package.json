@@ -4,6 +4,8 @@
   "description": "Auth API ",
   "main": "auth-app.js",
   "scripts": {
+    "start": "node auth-app.js",
+    "dev": "nodemon auth-app.js -e js,hbs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "David Reusch",
@@ -13,5 +15,8 @@
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1"
+  },
+  "engines": {
+    "node": "12.x"
   }
 }
