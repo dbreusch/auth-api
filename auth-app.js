@@ -37,6 +37,11 @@ app.use((req, res, next) => {
 // define routes
 app.use(authRoutes);
 
+//Index page (static HTML)
+app.route("/").get(function (req, res) {
+  res.sendFile(process.cwd() + "/index.html");
+});
+
 // this function only runs if nothing else responded first
 app.use((req, res, next) => {
   const error = new HttpError('auth-api: Could not find this route.', 404);
