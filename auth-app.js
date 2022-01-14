@@ -58,22 +58,26 @@ app.use((err, req, res, next) => {
   res.json({ message: err.message || 'auth-app/generic error handler: Something went wrong.' });
 });
 
-// start listening!
-// console.log(`Listening on port ${port}`);
-// app.listen(port);
 
 // Create an HTTPS listener that points to the express app
 // Use a callback fn to tell when the server is created
-https
-  .createServer(
-    // Provide the private and public key to the server by reading each
-    // file's content using readFileSync
-    {
-      key: fs.readFileSync('ssl/key.pem'),
-      cert: fs.readFileSync('ssl/cert.pem')
-    },
-    app
-  )
-  .listen(port, () => {
-    console.log(`HTTPS server is running at port ${port}`);
-  });
+if (process.env.NODE_ENV === 'production') {
+  // start listening!
+  console.log(`Listening on port ${port}`);
+  app.listen(port);
+
+} else {
+  https
+    .createServer(
+      // Provide the private and public key to the server by reading each
+      // file's content using readFileSync
+      {
+        key: fs.readFileSync('ssl/key.pem'),
+        cert: fs.readFileSync('ssl/cert.pem')
+      },
+      app
+    )
+    .listen(port, () => {
+      console.log(`HTTPS server is running at port ${port}`);
+    });
+}
