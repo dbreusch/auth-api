@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const fs = require('fs');
 const https = require('https');
 
+const HttpError = require('./helpers/http-error');
 const authRoutes = require('./routes/auth-routes');
 
 dotenv.config();
