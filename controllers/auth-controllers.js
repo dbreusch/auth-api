@@ -109,6 +109,12 @@ const getTokenConfirmation = (req, res, next) => {
   }
 };
 
+// return "home" page
+const getIndex = (req, res, next) => {
+  res.sendFile(process.cwd() +"/public/index.html");
+}
+
 exports.getHashedPassword = getHashedPassword;
 exports.getToken = getToken;
 exports.getTokenConfirmation = getTokenConfirmation;
+exports.getIndex = getIndex;

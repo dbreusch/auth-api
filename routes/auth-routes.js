@@ -17,4 +17,7 @@ router.post('/token', authControllers.getToken);
 // /verify-token: return a decoded JWT token
 router.post('/verify-token', authControllers.getTokenConfirmation);
 
+// Index page (static HTML)
+router.get('/', authControllers.getIndex);
+
 module.exports = router;
